@@ -1,0 +1,68 @@
+
+// Motor pins
+const int ENA = 6;// Right motor speed control
+const int ENB = 5;// Left motor speed control
+
+const int IN1 = 9;// Right motor direction
+const int IN2 = 8;// Right motor direction
+
+const int IN3 = 10;// Left motor direction
+const int IN4 = 11;// Left motor direction
+
+// Ultrasonic sensor pins
+// Front sensor
+const int trigFront = A0;
+const int echoFront = A3;
+
+// Left sensor
+const int trigLeft = A1;
+const int echoLeft = A4;
+
+// Right sensor
+const int trigRight = A2;
+const int echoRight = A5;
+
+void setup() {
+  // Motor pins setup
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  // Ultrasonic sensors setup
+  pinMode(trigFront, OUTPUT);
+  pinMode(echoFront, INPUT);
+  pinMode(trigLeft, OUTPUT);
+  pinMode(echoLeft, INPUT);
+  pinMode(trigRight, OUTPUT);
+  pinMode(echoRight, INPUT);
+
+  // Start motors
+  analogWrite(ENA, 120); // Speed for left motor
+  analogWrite(ENB, 120); // Speed for right motor
+}
+
+void loop() {
+  int distanceFront = getDistance(trigFront, echoFront);
+  int distanceLeft = getDistance(trigLeft, echoLeft);
+  int distanceRight = getDistance(trigRight, echoRight);
+
+  if (distanceFront < 10) { // Obstacle in front
+    stopMotors();
+    if (distanceLeft > distanceRight) {
+      turnLeft();
+    } else {
+      turnRight();
+    }
+  } else if (distanceLeft < 8) { // Wall too close on the left
+    turnRightSlightly();
+  } else if (distanceRight < 8) { // Wall too close on the right
+    turnLeftSlightly();
+  } else {
+    moveForward();
+  }
+}
+
+// Other functions here...
